@@ -1,5 +1,5 @@
 {
-  "name": "@plannotator/shared",
+  "name": "@pi-comment/shared",
   "version": "0.1.0",
   "private": true,
   "exports": {

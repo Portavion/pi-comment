@@ -1,9 +1,9 @@
 import React, { useMemo, useRef, useEffect, useCallback, useState } from 'react';
 import { FileDiff } from '@pierre/diffs/react';
 import { getSingularPatch, processFile } from '@pierre/diffs';
-import { CodeAnnotation, CodeAnnotationType, SelectedLineRange, DiffAnnotationMetadata } from '@plannotator/ui/types';
-import { useTheme } from '@plannotator/ui/components/ThemeProvider';
-import { CommentPopover } from '@plannotator/ui/components/CommentPopover';
+import { CodeAnnotation, CodeAnnotationType, SelectedLineRange, DiffAnnotationMetadata } from '@pi-comment/ui/types';
+import { useTheme } from '@pi-comment/ui/components/ThemeProvider';
+import { CommentPopover } from '@pi-comment/ui/components/CommentPopover';
 import { detectLanguage } from '../utils/detectLanguage';
 import { useAnnotationToolbar } from '../hooks/useAnnotationToolbar';
 import { FileHeader } from './FileHeader';

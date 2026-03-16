@@ -4,6 +4,14 @@
   "private": false,
   "type": "module",
   "description": "Standalone Pi extension for browser-based code review and markdown annotation",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Portavion/pi-comment.git"
+  },
+  "homepage": "https://github.com/Portavion/pi-comment",
+  "bugs": {
+    "url": "https://github.com/Portavion/pi-comment/issues"
+  },
   "license": "MIT OR Apache-2.0",
   "workspaces": ["apps/*", "packages/*"],
   "keywords": ["pi-package", "pi", "code-review", "markdown", "annotation"],

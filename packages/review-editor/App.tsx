@@ -1,25 +1,24 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { ThemeProvider, useTheme } from '@plannotator/ui/components/ThemeProvider';
-import { ModeToggle } from '@plannotator/ui/components/ModeToggle';
-import { ConfirmDialog } from '@plannotator/ui/components/ConfirmDialog';
-import { Settings } from '@plannotator/ui/components/Settings';
-import { UpdateBanner } from '@plannotator/ui/components/UpdateBanner';
-import { storage } from '@plannotator/ui/utils/storage';
-import { CompletionOverlay } from '@plannotator/ui/components/CompletionOverlay';
-import { getIdentity } from '@plannotator/ui/utils/identity';
-import { getAgentSwitchSettings, getEffectiveAgentName } from '@plannotator/ui/utils/agentSwitch';
-import { CodeAnnotation, CodeAnnotationType, SelectedLineRange } from '@plannotator/ui/types';
-import { useResizablePanel } from '@plannotator/ui/hooks/useResizablePanel';
-import { useCodeAnnotationDraft } from '@plannotator/ui/hooks/useCodeAnnotationDraft';
+import { ThemeProvider, useTheme } from '@pi-comment/ui/components/ThemeProvider';
+import { ModeToggle } from '@pi-comment/ui/components/ModeToggle';
+import { ConfirmDialog } from '@pi-comment/ui/components/ConfirmDialog';
+import { Settings } from '@pi-comment/ui/components/Settings';
+import { storage } from '@pi-comment/ui/utils/storage';
+import { CompletionOverlay } from '@pi-comment/ui/components/CompletionOverlay';
+import { getIdentity } from '@pi-comment/ui/utils/identity';
+import { getAgentSwitchSettings, getEffectiveAgentName } from '@pi-comment/ui/utils/agentSwitch';
+import { CodeAnnotation, CodeAnnotationType, SelectedLineRange } from '@pi-comment/ui/types';
+import { useResizablePanel } from '@pi-comment/ui/hooks/useResizablePanel';
+import { useCodeAnnotationDraft } from '@pi-comment/ui/hooks/useCodeAnnotationDraft';
 import { useGitAdd } from './hooks/useGitAdd';
-import { useEditorAnnotations } from '@plannotator/ui/hooks/useEditorAnnotations';
-import { exportEditorAnnotations } from '@plannotator/ui/utils/parser';
-import { ResizeHandle } from '@plannotator/ui/components/ResizeHandle';
+import { useEditorAnnotations } from '@pi-comment/ui/hooks/useEditorAnnotations';
+import { exportEditorAnnotations } from '@pi-comment/ui/utils/parser';
+import { ResizeHandle } from '@pi-comment/ui/components/ResizeHandle';
 import { DiffViewer } from './components/DiffViewer';
 import { ReviewPanel } from './components/ReviewPanel';
 import { FileTree } from './components/FileTree';
 import { DEMO_DIFF } from './demoData';
-import type { DiffOption, WorktreeInfo, GitContext } from '@plannotator/shared/types';
+import type { DiffOption, WorktreeInfo, GitContext } from '@pi-comment/shared/types';
 
 declare const __APP_VERSION__: string;
 
@@ -1074,8 +1073,6 @@ const ReviewApp: React.FC = () => {
           agentLabel={origin === 'claude-code' ? 'Claude Code' : origin === 'pi' ? 'Pi' : 'OpenCode'}
         />
 
-        {/* Update notification */}
-        <UpdateBanner origin={origin} />
       </div>
     </ThemeProvider>
   );

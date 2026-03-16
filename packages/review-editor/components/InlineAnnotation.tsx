@@ -1,5 +1,5 @@
 import React from 'react';
-import { DiffAnnotationMetadata } from '@plannotator/ui/types';
+import { DiffAnnotationMetadata } from '@pi-comment/ui/types';
 import { SuggestionBlock } from './SuggestionBlock';
 import { renderInlineMarkdown } from '../utils/renderInlineMarkdown';
 

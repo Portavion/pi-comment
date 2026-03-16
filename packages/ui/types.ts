@@ -102,4 +102,4 @@ export interface VaultNode {
   children?: VaultNode[];
 }
 
-export type { EditorAnnotation } from '@plannotator/shared/types';
+export type { EditorAnnotation } from '@pi-comment/shared/types';

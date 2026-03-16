@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from '@plannotator/review-editor';
-import '@plannotator/review-editor/styles';
+import App from '@pi-comment/review-editor';
+import '@pi-comment/review-editor/styles';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from '@plannotator/editor';
-import '@plannotator/editor/styles';
+import App from '@pi-comment/editor';
+import '@pi-comment/editor/styles';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

@@ -10,7 +10,7 @@
     "./theme": "./theme.css"
   },
   "dependencies": {
-    "@plannotator/shared": "workspace:*",
+    "@pi-comment/shared": "workspace:*",
     "@plannotator/web-highlighter": "^0.8.1",
     "@viz-js/viz": "^3.25.0",
     "diff": "^8.0.3",

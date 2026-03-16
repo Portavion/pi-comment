@@ -8,8 +8,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@plannotator/review-editor": "workspace:*",
-    "@plannotator/ui": "workspace:*",
+    "@pi-comment/review-editor": "workspace:*",
+    "@pi-comment/ui": "workspace:*",
     "@pierre/diffs": "^1.1.0-beta.19",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

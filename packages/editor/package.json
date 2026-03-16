@@ -7,7 +7,7 @@
     "./styles": "./index.css"
   },
   "dependencies": {
-    "@plannotator/ui": "workspace:*",
+    "@pi-comment/ui": "workspace:*",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwindcss": "^4.1.18"

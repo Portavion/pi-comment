@@ -18,9 +18,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '.'),
-      '@plannotator/ui': path.resolve(__dirname, '../../packages/ui'),
-      '@plannotator/editor/styles': path.resolve(__dirname, '../../packages/editor/index.css'),
-      '@plannotator/editor': path.resolve(__dirname, '../../packages/editor/App.tsx'),
+      '@pi-comment/ui': path.resolve(__dirname, '../../packages/ui'),
+      '@pi-comment/shared': path.resolve(__dirname, '../../packages/shared'),
+      '@pi-comment/editor/styles': path.resolve(__dirname, '../../packages/editor/index.css'),
+      '@pi-comment/editor': path.resolve(__dirname, '../../packages/editor/App.tsx'),
     }
   },
   build: {

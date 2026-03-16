@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useMemo } from 'react';
-import { CodeAnnotation } from '@plannotator/ui/types';
-import type { DiffOption, WorktreeInfo } from '@plannotator/shared/types';
+import { CodeAnnotation } from '@pi-comment/ui/types';
+import type { DiffOption, WorktreeInfo } from '@pi-comment/shared/types';
 import { buildFileTree, getAncestorPaths, getAllFolderPaths } from '../utils/buildFileTree';
 import { FileTreeNodeItem } from './FileTreeNode';
 

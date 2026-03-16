@@ -1,55 +1,54 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { parseMarkdownToBlocks, exportAnnotations, exportLinkedDocAnnotations, exportEditorAnnotations, extractFrontmatter, wrapFeedbackForAgent, Frontmatter } from '@plannotator/ui/utils/parser';
-import { Viewer, ViewerHandle } from '@plannotator/ui/components/Viewer';
-import { AnnotationPanel } from '@plannotator/ui/components/AnnotationPanel';
-import { ExportModal } from '@plannotator/ui/components/ExportModal';
-import { ImportModal } from '@plannotator/ui/components/ImportModal';
-import { ConfirmDialog } from '@plannotator/ui/components/ConfirmDialog';
-import { Annotation, Block, EditorMode, type InputMethod, type ImageAttachment } from '@plannotator/ui/types';
-import { ThemeProvider } from '@plannotator/ui/components/ThemeProvider';
-import { ModeToggle } from '@plannotator/ui/components/ModeToggle';
-import { AnnotationToolstrip } from '@plannotator/ui/components/AnnotationToolstrip';
-import { TaterSpriteRunning } from '@plannotator/ui/components/TaterSpriteRunning';
-import { TaterSpritePullup } from '@plannotator/ui/components/TaterSpritePullup';
-import { Settings } from '@plannotator/ui/components/Settings';
-import { useSharing } from '@plannotator/ui/hooks/useSharing';
-import { useAgents } from '@plannotator/ui/hooks/useAgents';
-import { useActiveSection } from '@plannotator/ui/hooks/useActiveSection';
-import { storage } from '@plannotator/ui/utils/storage';
-import { CompletionOverlay } from '@plannotator/ui/components/CompletionOverlay';
-import { UpdateBanner } from '@plannotator/ui/components/UpdateBanner';
-import { getObsidianSettings, getEffectiveVaultPath, isObsidianConfigured, CUSTOM_PATH_SENTINEL } from '@plannotator/ui/utils/obsidian';
-import { getBearSettings } from '@plannotator/ui/utils/bear';
-import { getOctarineSettings, isOctarineConfigured } from '@plannotator/ui/utils/octarine';
-import { getDefaultNotesApp } from '@plannotator/ui/utils/defaultNotesApp';
-import { getAgentSwitchSettings, getEffectiveAgentName } from '@plannotator/ui/utils/agentSwitch';
-import { getPlanSaveSettings } from '@plannotator/ui/utils/planSave';
-import { getUIPreferences, type UIPreferences, type PlanWidth } from '@plannotator/ui/utils/uiPreferences';
-import { getEditorMode, saveEditorMode } from '@plannotator/ui/utils/editorMode';
-import { getInputMethod, saveInputMethod } from '@plannotator/ui/utils/inputMethod';
-import { useInputMethodSwitch } from '@plannotator/ui/hooks/useInputMethodSwitch';
-import { useResizablePanel } from '@plannotator/ui/hooks/useResizablePanel';
-import { ResizeHandle } from '@plannotator/ui/components/ResizeHandle';
-import { MobileMenu } from '@plannotator/ui/components/MobileMenu';
+import { parseMarkdownToBlocks, exportAnnotations, exportLinkedDocAnnotations, exportEditorAnnotations, extractFrontmatter, wrapFeedbackForAgent, Frontmatter } from '@pi-comment/ui/utils/parser';
+import { Viewer, ViewerHandle } from '@pi-comment/ui/components/Viewer';
+import { AnnotationPanel } from '@pi-comment/ui/components/AnnotationPanel';
+import { ExportModal } from '@pi-comment/ui/components/ExportModal';
+import { ImportModal } from '@pi-comment/ui/components/ImportModal';
+import { ConfirmDialog } from '@pi-comment/ui/components/ConfirmDialog';
+import { Annotation, Block, EditorMode, type InputMethod, type ImageAttachment } from '@pi-comment/ui/types';
+import { ThemeProvider } from '@pi-comment/ui/components/ThemeProvider';
+import { ModeToggle } from '@pi-comment/ui/components/ModeToggle';
+import { AnnotationToolstrip } from '@pi-comment/ui/components/AnnotationToolstrip';
+import { TaterSpriteRunning } from '@pi-comment/ui/components/TaterSpriteRunning';
+import { TaterSpritePullup } from '@pi-comment/ui/components/TaterSpritePullup';
+import { Settings } from '@pi-comment/ui/components/Settings';
+import { useSharing } from '@pi-comment/ui/hooks/useSharing';
+import { useAgents } from '@pi-comment/ui/hooks/useAgents';
+import { useActiveSection } from '@pi-comment/ui/hooks/useActiveSection';
+import { storage } from '@pi-comment/ui/utils/storage';
+import { CompletionOverlay } from '@pi-comment/ui/components/CompletionOverlay';
+import { getObsidianSettings, getEffectiveVaultPath, isObsidianConfigured, CUSTOM_PATH_SENTINEL } from '@pi-comment/ui/utils/obsidian';
+import { getBearSettings } from '@pi-comment/ui/utils/bear';
+import { getOctarineSettings, isOctarineConfigured } from '@pi-comment/ui/utils/octarine';
+import { getDefaultNotesApp } from '@pi-comment/ui/utils/defaultNotesApp';
+import { getAgentSwitchSettings, getEffectiveAgentName } from '@pi-comment/ui/utils/agentSwitch';
+import { getPlanSaveSettings } from '@pi-comment/ui/utils/planSave';
+import { getUIPreferences, type UIPreferences, type PlanWidth } from '@pi-comment/ui/utils/uiPreferences';
+import { getEditorMode, saveEditorMode } from '@pi-comment/ui/utils/editorMode';
+import { getInputMethod, saveInputMethod } from '@pi-comment/ui/utils/inputMethod';
+import { useInputMethodSwitch } from '@pi-comment/ui/hooks/useInputMethodSwitch';
+import { useResizablePanel } from '@pi-comment/ui/hooks/useResizablePanel';
+import { ResizeHandle } from '@pi-comment/ui/components/ResizeHandle';
+import { MobileMenu } from '@pi-comment/ui/components/MobileMenu';
 import {
   getPermissionModeSettings,
   needsPermissionModeSetup,
   type PermissionMode,
-} from '@plannotator/ui/utils/permissionMode';
-import { PermissionModeSetup } from '@plannotator/ui/components/PermissionModeSetup';
-import { ImageAnnotator } from '@plannotator/ui/components/ImageAnnotator';
-import { deriveImageName } from '@plannotator/ui/components/AttachmentsButton';
-import { useSidebar } from '@plannotator/ui/hooks/useSidebar';
-import { usePlanDiff, type VersionInfo } from '@plannotator/ui/hooks/usePlanDiff';
-import { useLinkedDoc } from '@plannotator/ui/hooks/useLinkedDoc';
-import { useVaultBrowser } from '@plannotator/ui/hooks/useVaultBrowser';
-import { useAnnotationDraft } from '@plannotator/ui/hooks/useAnnotationDraft';
-import { useEditorAnnotations } from '@plannotator/ui/hooks/useEditorAnnotations';
-import { isVaultBrowserEnabled } from '@plannotator/ui/utils/obsidian';
-import { SidebarTabs } from '@plannotator/ui/components/sidebar/SidebarTabs';
-import { SidebarContainer } from '@plannotator/ui/components/sidebar/SidebarContainer';
-import { PlanDiffViewer } from '@plannotator/ui/components/plan-diff/PlanDiffViewer';
-import type { PlanDiffMode } from '@plannotator/ui/components/plan-diff/PlanDiffModeSwitcher';
+} from '@pi-comment/ui/utils/permissionMode';
+import { PermissionModeSetup } from '@pi-comment/ui/components/PermissionModeSetup';
+import { ImageAnnotator } from '@pi-comment/ui/components/ImageAnnotator';
+import { deriveImageName } from '@pi-comment/ui/components/AttachmentsButton';
+import { useSidebar } from '@pi-comment/ui/hooks/useSidebar';
+import { usePlanDiff, type VersionInfo } from '@pi-comment/ui/hooks/usePlanDiff';
+import { useLinkedDoc } from '@pi-comment/ui/hooks/useLinkedDoc';
+import { useVaultBrowser } from '@pi-comment/ui/hooks/useVaultBrowser';
+import { useAnnotationDraft } from '@pi-comment/ui/hooks/useAnnotationDraft';
+import { useEditorAnnotations } from '@pi-comment/ui/hooks/useEditorAnnotations';
+import { isVaultBrowserEnabled } from '@pi-comment/ui/utils/obsidian';
+import { SidebarTabs } from '@pi-comment/ui/components/sidebar/SidebarTabs';
+import { SidebarContainer } from '@pi-comment/ui/components/sidebar/SidebarContainer';
+import { PlanDiffViewer } from '@pi-comment/ui/components/plan-diff/PlanDiffViewer';
+import type { PlanDiffMode } from '@pi-comment/ui/components/plan-diff/PlanDiffModeSwitcher';
 import { DEMO_PLAN_CONTENT } from './demoPlan';
 
 type NoteAutoSaveResults = {
@@ -1479,8 +1478,6 @@ const App: React.FC = () => {
           agentLabel={agentName}
         />
 
-        {/* Update notification */}
-        <UpdateBanner origin={origin} />
 
         {/* Image Annotator for pasted images */}
         <ImageAnnotator

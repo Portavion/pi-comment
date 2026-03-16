@@ -2,8 +2,8 @@
  * Portable deflate-raw + base64url compression.
  *
  * Uses only Web APIs (CompressionStream, TextEncoder, btoa) so it works
- * in browsers, Bun, and edge runtimes.  Both @plannotator/server and
- * @plannotator/ui import from here — single source of truth.
+ * in browsers, Bun, and edge runtimes. Shared runtime code imports from
+ * here so compression logic stays in one place.
  */
 
 export async function compress(data: unknown): Promise<string> {
