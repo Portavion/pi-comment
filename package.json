@@ -1,20 +1,20 @@
 {
-  "name": "pi-comment",
+  "name": "pi-feedback",
   "version": "0.1.0",
   "private": false,
   "type": "module",
-  "description": "Standalone Pi extension for browser-based code review and markdown annotation",
+  "description": "Standalone Pi extension for browser-based code feedback and markdown annotation",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Portavion/pi-comment.git"
+    "url": "git+https://github.com/Portavion/pi-feedback.git"
   },
-  "homepage": "https://github.com/Portavion/pi-comment",
+  "homepage": "https://github.com/Portavion/pi-feedback",
   "bugs": {
-    "url": "https://github.com/Portavion/pi-comment/issues"
+    "url": "https://github.com/Portavion/pi-feedback/issues"
   },
   "license": "MIT OR Apache-2.0",
   "workspaces": ["apps/*", "packages/*"],
-  "keywords": ["pi-package", "pi", "code-review", "markdown", "annotation"],
+  "keywords": ["pi-package", "pi", "code-feedback", "markdown", "annotation"],
   "pi": {
     "extensions": ["./"]
   },

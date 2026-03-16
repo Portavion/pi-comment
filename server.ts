@@ -1,5 +1,5 @@
 /**
- * Derived from Plannotator and modified for the standalone pi-comment project.
+ * Derived from Plannotator and modified for the standalone pi-feedback project.
  */
 import { createServer, type IncomingMessage, type Server } from "node:http";
 import { execSync, spawn } from "node:child_process";
@@ -314,7 +314,7 @@ export async function startReviewServer(options: {
       json(res, {
         rawPatch: currentPatch,
         gitRef: currentGitRef,
-        origin: options.origin ?? "pi-comment",
+        origin: options.origin ?? "pi-feedback",
         diffType: currentDiffType,
         gitContext: options.gitContext,
       });
@@ -378,7 +378,7 @@ export async function startAnnotateServer(options: {
       markClientSeen();
       json(res, {
         plan: options.markdown,
-        origin: options.origin ?? "pi-comment",
+        origin: options.origin ?? "pi-feedback",
         mode: "annotate",
         filePath: options.filePath,
       });

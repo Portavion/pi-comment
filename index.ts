@@ -1,5 +1,5 @@
 /**
- * Derived from Plannotator and modified for the standalone pi-comment project.
+ * Derived from Plannotator and modified for the standalone pi-feedback project.
  */
 import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -23,7 +23,7 @@ interface DecisionServer<T> {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 let annotatorHtmlContent = "";
-let reviewHtmlContent = "";
+let codeFeedbackHtmlContent = "";
 
 try {
   annotatorHtmlContent = readFileSync(resolve(__dirname, "annotator.html"), "utf-8");
@@ -32,12 +32,12 @@ try {
 }
 
 try {
-  reviewHtmlContent = readFileSync(resolve(__dirname, "review-editor.html"), "utf-8");
+  codeFeedbackHtmlContent = readFileSync(resolve(__dirname, "review-editor.html"), "utf-8");
 } catch {
   // HTML not built yet.
 }
 
-async function runBrowserReview<T extends { type: "submitted" | "closed" }>(server: DecisionServer<T>, ctx: ExtensionContext): Promise<T> {
+async function runBrowserDecisionFlow<T extends { type: "submitted" | "closed" }>(server: DecisionServer<T>, ctx: ExtensionContext): Promise<T> {
   const browserResult = openBrowser(server.url);
   if (browserResult.isRemote) {
     ctx.ui.notify(`Remote session. Open manually: ${browserResult.url}`, "info");
@@ -77,16 +77,16 @@ function resolveMarkdownPath(cwd: string, rawFilePath: string): { displayPath: s
   return { displayPath: filePath, absolutePath };
 }
 
-export default function piComment(pi: ExtensionAPI): void {
-  pi.registerCommand("codereview", {
-    description: "Open interactive code review for current git changes",
+export default function piFeedback(pi: ExtensionAPI): void {
+  pi.registerCommand("feedback-code", {
+    description: "Open interactive code feedback for current git changes",
     handler: async (_args, ctx) => {
-      if (!reviewHtmlContent) {
-        ctx.ui.notify("Review UI not available. Expected review-editor.html next to the extension.", "error");
+      if (!codeFeedbackHtmlContent) {
+        ctx.ui.notify("Code feedback UI not available. Expected review-editor.html next to the extension.", "error");
         return;
       }
 
-      ctx.ui.notify("Opening code review UI...", "info");
+      ctx.ui.notify("Opening code feedback UI...", "info");
 
       const gitCtx = getGitContext();
       const { patch: rawPatch, label: gitRef } = runGitDiff("uncommitted", gitCtx.defaultBranch);
@@ -96,45 +96,45 @@ export default function piComment(pi: ExtensionAPI): void {
         server = await startReviewServer({
           rawPatch,
           gitRef,
-          origin: "pi-comment",
+          origin: "pi-feedback",
           diffType: "uncommitted",
           gitContext: gitCtx,
-          htmlContent: reviewHtmlContent,
+          htmlContent: codeFeedbackHtmlContent,
         });
       } catch (err) {
-        ctx.ui.notify(`Failed to start code review UI: ${getStartupErrorMessage(err)}`, "error");
+        ctx.ui.notify(`Failed to start code feedback UI: ${getStartupErrorMessage(err)}`, "error");
         return;
       }
 
-      const result = await runBrowserReview(server, ctx);
+      const result = await runBrowserDecisionFlow(server, ctx);
 
       if (result.type === "closed") {
-        ctx.ui.notify("Code review UI closed without feedback.", "info");
+        ctx.ui.notify("Code feedback UI closed without feedback.", "info");
         return;
       }
 
       if (result.feedback) {
         if (result.approved) {
-          pi.sendUserMessage("# Code Review\n\nCode review completed — no changes requested.");
+          pi.sendUserMessage("# Code Feedback\n\nCode feedback completed — no changes requested.");
         } else {
-          pi.sendUserMessage(`# Code Review Feedback\n\n${result.feedback}\n\nPlease address this feedback.`);
+          pi.sendUserMessage(`# Code Feedback\n\n${result.feedback}\n\nPlease address this code feedback.`);
         }
       } else {
-        ctx.ui.notify("Code review closed (no feedback).", "info");
+        ctx.ui.notify("Code feedback closed (no feedback).", "info");
       }
     },
   });
 
-  pi.registerCommand("md-review", {
+  pi.registerCommand("feedback-file", {
     description: "Open a markdown file in the browser annotation UI",
     handler: async (args, ctx) => {
       const filePath = args?.trim();
       if (!filePath) {
-        ctx.ui.notify("Usage: /md-review <file.md>", "error");
+        ctx.ui.notify("Usage: /feedback-file <file.md>", "error");
         return;
       }
       if (!isMarkdownFile(filePath)) {
-        ctx.ui.notify("/md-review only supports .md and .mdx files.", "error");
+        ctx.ui.notify("/feedback-file only supports .md and .mdx files.", "error");
         return;
       }
       if (!annotatorHtmlContent) {
@@ -156,7 +156,7 @@ export default function piComment(pi: ExtensionAPI): void {
         server = await startAnnotateServer({
           markdown,
           filePath: absolutePath,
-          origin: "pi-comment",
+          origin: "pi-feedback",
           htmlContent: annotatorHtmlContent,
         });
       } catch (err) {
@@ -164,7 +164,7 @@ export default function piComment(pi: ExtensionAPI): void {
         return;
       }
 
-      const result = await runBrowserReview(server, ctx);
+      const result = await runBrowserDecisionFlow(server, ctx);
 
       if (result.type === "closed") {
         ctx.ui.notify("Annotation UI closed without feedback.", "info");

@@ -1,11 +1,11 @@
-pi-comment contains code derived from Plannotator:
+pi-feedback contains code derived from Plannotator:
 https://github.com/backnotprop/plannotator
 
 Original copyright:
 Copyright (c) 2025 backnotprop
 
 This repository is a reduced standalone extraction focused on:
-- browser-based code review for Pi
+- browser-based code feedback for Pi
 - browser-based markdown annotation for Pi
 
 Files and source structure have been modified from the original project.
