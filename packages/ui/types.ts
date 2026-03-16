@@ -59,7 +59,7 @@ export interface DiffResult {
   diffText: string;
 }
 
-// Code Review Types
+// Code Feedback Types
 export type CodeAnnotationType = 'comment' | 'suggestion' | 'concern';
 export type CodeAnnotationScope = 'line' | 'file';
 
@@ -102,4 +102,4 @@ export interface VaultNode {
   children?: VaultNode[];
 }
 
-export type { EditorAnnotation } from '@pi-comment/shared/types';
+export type { EditorAnnotation } from '@pi-feedback/shared/types';

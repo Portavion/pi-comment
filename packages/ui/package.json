@@ -1,5 +1,5 @@
 {
-  "name": "@pi-comment/ui",
+  "name": "@pi-feedback/ui",
   "version": "0.1.0",
   "type": "module",
   "exports": {
@@ -10,7 +10,7 @@
     "./theme": "./theme.css"
   },
   "dependencies": {
-    "@pi-comment/shared": "workspace:*",
+    "@pi-feedback/shared": "workspace:*",
     "@plannotator/web-highlighter": "^0.8.1",
     "@viz-js/viz": "^3.25.0",
     "diff": "^8.0.3",

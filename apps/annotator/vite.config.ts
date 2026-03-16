@@ -18,10 +18,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '.'),
-      '@pi-comment/ui': path.resolve(__dirname, '../../packages/ui'),
-      '@pi-comment/shared': path.resolve(__dirname, '../../packages/shared'),
-      '@pi-comment/editor/styles': path.resolve(__dirname, '../../packages/editor/index.css'),
-      '@pi-comment/editor': path.resolve(__dirname, '../../packages/editor/App.tsx'),
+      '@pi-feedback/ui': path.resolve(__dirname, '../../packages/ui'),
+      '@pi-feedback/shared': path.resolve(__dirname, '../../packages/shared'),
+      '@pi-feedback/editor/styles': path.resolve(__dirname, '../../packages/editor/index.css'),
+      '@pi-feedback/editor': path.resolve(__dirname, '../../packages/editor/App.tsx'),
     }
   },
   build: {

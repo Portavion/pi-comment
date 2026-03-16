@@ -20,10 +20,10 @@
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./*"],
-      "@pi-comment/ui/*": ["../../packages/ui/*"],
-      "@pi-comment/shared/*": ["../../packages/shared/*"],
-      "@pi-comment/review-editor": ["../../packages/review-editor/App.tsx"],
-      "@pi-comment/review-editor/*": ["../../packages/review-editor/*"]
+      "@pi-feedback/ui/*": ["../../packages/ui/*"],
+      "@pi-feedback/shared/*": ["../../packages/shared/*"],
+      "@pi-feedback/review-editor": ["../../packages/review-editor/App.tsx"],
+      "@pi-feedback/review-editor/*": ["../../packages/review-editor/*"]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true

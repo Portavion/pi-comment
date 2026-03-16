@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { CodeAnnotation, type EditorAnnotation } from '@pi-comment/ui/types';
-import { isCurrentUser } from '@pi-comment/ui/utils/identity';
-import { EditorAnnotationCard } from '@pi-comment/ui/components/EditorAnnotationCard';
+import { CodeAnnotation, type EditorAnnotation } from '@pi-feedback/ui/types';
+import { isCurrentUser } from '@pi-feedback/ui/utils/identity';
+import { EditorAnnotationCard } from '@pi-feedback/ui/components/EditorAnnotationCard';
 import { HighlightedCode } from './HighlightedCode';
 import { detectLanguage } from '../utils/detectLanguage';
 import { renderInlineMarkdown } from '../utils/renderInlineMarkdown';

@@ -1,5 +1,5 @@
 import { Block, type Annotation, type EditorAnnotation, type ImageAttachment } from '../types';
-import { planDenyFeedback } from '@pi-comment/shared/feedback-templates';
+import { planDenyFeedback } from '@pi-feedback/shared/feedback-templates';
 
 /**
  * Parsed YAML frontmatter as key-value pairs.

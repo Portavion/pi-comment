@@ -1,5 +1,5 @@
 {
-  "name": "@pi-comment/review-app",
+  "name": "@pi-feedback/review-app",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -8,8 +8,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@pi-comment/review-editor": "workspace:*",
-    "@pi-comment/ui": "workspace:*",
+    "@pi-feedback/review-editor": "workspace:*",
+    "@pi-feedback/ui": "workspace:*",
     "@pierre/diffs": "^1.1.0-beta.19",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

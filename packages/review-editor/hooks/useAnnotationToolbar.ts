@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { CodeAnnotation, SelectedLineRange, CodeAnnotationType } from '@pi-comment/ui/types';
-import { useDismissOnOutsideAndEscape } from '@pi-comment/ui/hooks/useDismissOnOutsideAndEscape';
+import { CodeAnnotation, SelectedLineRange, CodeAnnotationType } from '@pi-feedback/ui/types';
+import { useDismissOnOutsideAndEscape } from '@pi-feedback/ui/hooks/useDismissOnOutsideAndEscape';
 import { extractLinesFromPatch } from '../utils/patchParser';
 
 export interface ToolbarState {

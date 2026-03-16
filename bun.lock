@@ -3,17 +3,17 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "pi-comment",
+      "name": "pi-feedback",
       "peerDependencies": {
         "@mariozechner/pi-coding-agent": ">=0.53.0",
       },
     },
     "apps/annotator": {
-      "name": "@pi-comment/annotator-app",
+      "name": "@pi-feedback/annotator-app",
       "version": "0.1.0",
       "dependencies": {
-        "@pi-comment/editor": "workspace:*",
-        "@pi-comment/ui": "workspace:*",
+        "@pi-feedback/editor": "workspace:*",
+        "@pi-feedback/ui": "workspace:*",
         "@tailwindcss/vite": "^4.1.18",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
@@ -28,11 +28,11 @@
       },
     },
     "apps/review": {
-      "name": "@pi-comment/review-app",
+      "name": "@pi-feedback/review-app",
       "version": "0.1.0",
       "dependencies": {
-        "@pi-comment/review-editor": "workspace:*",
-        "@pi-comment/ui": "workspace:*",
+        "@pi-feedback/review-editor": "workspace:*",
+        "@pi-feedback/ui": "workspace:*",
         "@pierre/diffs": "^1.1.0-beta.19",
         "@tailwindcss/vite": "^4.1.18",
         "react": "^19.2.3",
@@ -48,21 +48,21 @@
       },
     },
     "packages/editor": {
-      "name": "@pi-comment/editor",
+      "name": "@pi-feedback/editor",
       "version": "0.1.0",
       "dependencies": {
-        "@pi-comment/ui": "workspace:*",
+        "@pi-feedback/ui": "workspace:*",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "tailwindcss": "^4.1.18",
       },
     },
     "packages/review-editor": {
-      "name": "@pi-comment/review-editor",
+      "name": "@pi-feedback/review-editor",
       "version": "0.1.0",
       "dependencies": {
-        "@pi-comment/shared": "workspace:*",
-        "@pi-comment/ui": "workspace:*",
+        "@pi-feedback/shared": "workspace:*",
+        "@pi-feedback/ui": "workspace:*",
         "@pierre/diffs": "^1.1.0-beta.19",
         "highlight.js": "^11.11.1",
         "react": "^19.2.3",
@@ -71,14 +71,14 @@
       },
     },
     "packages/shared": {
-      "name": "@pi-comment/shared",
+      "name": "@pi-feedback/shared",
       "version": "0.1.0",
     },
     "packages/ui": {
-      "name": "@pi-comment/ui",
+      "name": "@pi-feedback/ui",
       "version": "0.1.0",
       "dependencies": {
-        "@pi-comment/shared": "workspace:*",
+        "@pi-feedback/shared": "workspace:*",
         "@plannotator/web-highlighter": "^0.8.1",
         "@viz-js/viz": "^3.25.0",
         "diff": "^8.0.3",
@@ -322,17 +322,17 @@
 
     "@mistralai/mistralai": ["@mistralai/mistralai@1.14.1", "", { "dependencies": { "ws": "^8.18.0", "zod": "^3.25.0 || ^4.0.0", "zod-to-json-schema": "^3.24.1" } }, "sha512-IiLmmZFCCTReQgPAT33r7KQ1nYo5JPdvGkrkZqA8qQ2qB1GHgs5LoP5K2ICyrjnpw2n8oSxMM/VP+liiKcGNlQ=="],
 
-    "@pi-comment/annotator-app": ["@pi-comment/annotator-app@workspace:apps/annotator"],
+    "@pi-feedback/annotator-app": ["@pi-feedback/annotator-app@workspace:apps/annotator"],
 
-    "@pi-comment/editor": ["@pi-comment/editor@workspace:packages/editor"],
+    "@pi-feedback/editor": ["@pi-feedback/editor@workspace:packages/editor"],
 
-    "@pi-comment/review-app": ["@pi-comment/review-app@workspace:apps/review"],
+    "@pi-feedback/review-app": ["@pi-feedback/review-app@workspace:apps/review"],
 
-    "@pi-comment/review-editor": ["@pi-comment/review-editor@workspace:packages/review-editor"],
+    "@pi-feedback/review-editor": ["@pi-feedback/review-editor@workspace:packages/review-editor"],
 
-    "@pi-comment/shared": ["@pi-comment/shared@workspace:packages/shared"],
+    "@pi-feedback/shared": ["@pi-feedback/shared@workspace:packages/shared"],
 
-    "@pi-comment/ui": ["@pi-comment/ui@workspace:packages/ui"],
+    "@pi-feedback/ui": ["@pi-feedback/ui@workspace:packages/ui"],
 
     "@pierre/diffs": ["@pierre/diffs@1.1.0", "", { "dependencies": { "@pierre/theme": "0.0.22", "@shikijs/transformers": "^3.0.0", "diff": "8.0.3", "hast-util-to-html": "9.0.5", "lru_map": "0.4.1", "shiki": "^3.0.0" }, "peerDependencies": { "react": "^18.3.1 || ^19.0.0", "react-dom": "^18.3.1 || ^19.0.0" } }, "sha512-wbxrzcmanJuHZb81iir09j42uU9AnKxXDtAuEQJbAnti5f2UfYdCQYejawuHZStFrlsMacCZLh/dDHmqvAaQCw=="],
 

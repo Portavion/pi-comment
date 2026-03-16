@@ -9,8 +9,8 @@
  */
 
 import { Annotation, AnnotationType, type ImageAttachment } from '../types';
-import { compress, decompress } from '@pi-comment/shared/compress';
-import { encrypt, decrypt } from '@pi-comment/shared/crypto';
+import { compress, decompress } from '@pi-feedback/shared/compress';
+import { encrypt, decrypt } from '@pi-feedback/shared/crypto';
 
 // Image in shareable format: plain string (old) or [path, name] tuple (new)
 type ShareableImage = string | [string, string];

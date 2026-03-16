@@ -1,5 +1,5 @@
 {
-  "name": "@pi-comment/annotator-app",
+  "name": "@pi-feedback/annotator-app",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -8,8 +8,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@pi-comment/editor": "workspace:*",
-    "@pi-comment/ui": "workspace:*",
+    "@pi-feedback/editor": "workspace:*",
+    "@pi-feedback/ui": "workspace:*",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwindcss": "^4.1.18",

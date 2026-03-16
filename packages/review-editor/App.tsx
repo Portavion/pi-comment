@@ -1,24 +1,24 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { ThemeProvider, useTheme } from '@pi-comment/ui/components/ThemeProvider';
-import { ModeToggle } from '@pi-comment/ui/components/ModeToggle';
-import { ConfirmDialog } from '@pi-comment/ui/components/ConfirmDialog';
-import { Settings } from '@pi-comment/ui/components/Settings';
-import { storage } from '@pi-comment/ui/utils/storage';
-import { CompletionOverlay } from '@pi-comment/ui/components/CompletionOverlay';
-import { getIdentity } from '@pi-comment/ui/utils/identity';
-import { getAgentSwitchSettings, getEffectiveAgentName } from '@pi-comment/ui/utils/agentSwitch';
-import { CodeAnnotation, CodeAnnotationType, SelectedLineRange } from '@pi-comment/ui/types';
-import { useResizablePanel } from '@pi-comment/ui/hooks/useResizablePanel';
-import { useCodeAnnotationDraft } from '@pi-comment/ui/hooks/useCodeAnnotationDraft';
+import { ThemeProvider, useTheme } from '@pi-feedback/ui/components/ThemeProvider';
+import { ModeToggle } from '@pi-feedback/ui/components/ModeToggle';
+import { ConfirmDialog } from '@pi-feedback/ui/components/ConfirmDialog';
+import { Settings } from '@pi-feedback/ui/components/Settings';
+import { storage } from '@pi-feedback/ui/utils/storage';
+import { CompletionOverlay } from '@pi-feedback/ui/components/CompletionOverlay';
+import { getIdentity } from '@pi-feedback/ui/utils/identity';
+import { getAgentSwitchSettings, getEffectiveAgentName } from '@pi-feedback/ui/utils/agentSwitch';
+import { CodeAnnotation, CodeAnnotationType, SelectedLineRange } from '@pi-feedback/ui/types';
+import { useResizablePanel } from '@pi-feedback/ui/hooks/useResizablePanel';
+import { useCodeAnnotationDraft } from '@pi-feedback/ui/hooks/useCodeAnnotationDraft';
 import { useGitAdd } from './hooks/useGitAdd';
-import { useEditorAnnotations } from '@pi-comment/ui/hooks/useEditorAnnotations';
-import { exportEditorAnnotations } from '@pi-comment/ui/utils/parser';
-import { ResizeHandle } from '@pi-comment/ui/components/ResizeHandle';
+import { useEditorAnnotations } from '@pi-feedback/ui/hooks/useEditorAnnotations';
+import { exportEditorAnnotations } from '@pi-feedback/ui/utils/parser';
+import { ResizeHandle } from '@pi-feedback/ui/components/ResizeHandle';
 import { DiffViewer } from './components/DiffViewer';
 import { ReviewPanel } from './components/ReviewPanel';
 import { FileTree } from './components/FileTree';
 import { DEMO_DIFF } from './demoData';
-import type { DiffOption, WorktreeInfo, GitContext } from '@pi-comment/shared/types';
+import type { DiffOption, WorktreeInfo, GitContext } from '@pi-feedback/shared/types';
 
 declare const __APP_VERSION__: string;
 
@@ -79,9 +79,9 @@ function generateId(): string {
 }
 
 // Export annotations as markdown feedback
-function exportReviewFeedback(annotations: CodeAnnotation[], files: DiffFile[]): string {
+function exportCodeFeedback(annotations: CodeAnnotation[], files: DiffFile[]): string {
   if (annotations.length === 0) {
-    return '# Code Review\n\nNo feedback provided.';
+    return '# Code Feedback\n\nNo feedback provided.';
   }
 
   const grouped = new Map<string, CodeAnnotation[]>();
@@ -91,7 +91,7 @@ function exportReviewFeedback(annotations: CodeAnnotation[], files: DiffFile[]):
     grouped.set(ann.filePath, existing);
   }
 
-  let output = '# Code Review Feedback\n\n';
+  let output = '# Code Feedback\n\n';
 
   for (const [filePath, fileAnnotations] of grouped) {
     output += `## ${filePath}\n\n`;
@@ -145,7 +145,7 @@ function exportReviewFeedback(annotations: CodeAnnotation[], files: DiffFile[]):
   return output;
 }
 
-const ReviewApp: React.FC = () => {
+const CodeFeedbackApp: React.FC = () => {
   const [diffData, setDiffData] = useState<DiffData | null>(null);
   const [files, setFiles] = useState<DiffFile[]>([]);
   const [activeFileIndex, setActiveFileIndex] = useState(0);
@@ -513,7 +513,7 @@ const ReviewApp: React.FC = () => {
       return;
     }
     try {
-      const feedback = exportReviewFeedback(annotations, files);
+      const feedback = exportCodeFeedback(annotations, files);
       await navigator.clipboard.writeText(feedback);
       setCopyFeedback('Feedback copied!');
       setTimeout(() => setCopyFeedback(null), 2000);
@@ -526,7 +526,7 @@ const ReviewApp: React.FC = () => {
 
   const activeFile = files[activeFileIndex];
   const feedbackMarkdown = useMemo(() => {
-    let output = exportReviewFeedback(annotations, files);
+    let output = exportCodeFeedback(annotations, files);
     if (editorAnnotations.length > 0) {
       output += exportEditorAnnotations(editorAnnotations);
     }
@@ -681,7 +681,7 @@ const ReviewApp: React.FC = () => {
               v{typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.0'}
             </a>
             <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-secondary/15 text-secondary hidden md:inline">
-              Code Review
+              Code Feedback
             </span>
             {/* Agent badge — unreliable for now across multiple harnesses */}
             {/* {origin && (
@@ -810,7 +810,7 @@ const ReviewApp: React.FC = () => {
               <button
                 onClick={handleCopyFeedback}
                 className="px-2 py-1 md:px-2.5 rounded-md text-xs font-medium bg-muted hover:bg-muted/80 transition-colors flex items-center gap-1.5"
-                title="Copy feedback for LLM"
+                title="Copy code feedback for LLM"
               >
                 {copyFeedback === 'Feedback copied!' ? (
                   <>
@@ -960,7 +960,7 @@ const ReviewApp: React.FC = () => {
                       <>
                         <h3 className="text-sm font-medium text-foreground">No changes</h3>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {activeDiffBase === 'uncommitted' && `No uncommitted changes${activeWorktreePath ? ' in this worktree' : ' to review'}.`}
+                          {activeDiffBase === 'uncommitted' && `No uncommitted changes${activeWorktreePath ? ' in this worktree' : ''} available for feedback.`}
                           {activeDiffBase === 'staged' && "No staged changes. Stage some files with git add."}
                           {activeDiffBase === 'unstaged' && "No unstaged changes. All changes are staged."}
                           {activeDiffBase === 'last-commit' && `No changes in the last commit${activeWorktreePath ? ' in this worktree' : ''}.`}
@@ -1003,7 +1003,7 @@ const ReviewApp: React.FC = () => {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
             <div className="bg-card border border-border rounded-xl w-full max-w-2xl flex flex-col max-h-[80vh] shadow-2xl">
               <div className="p-4 border-b border-border flex justify-between items-center">
-                <h3 className="font-semibold text-sm">Export Review Feedback</h3>
+                <h3 className="font-semibold text-sm">Export Code Feedback</h3>
                 <button
                   onClick={() => setShowExportModal(false)}
                   className="p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
@@ -1068,7 +1068,7 @@ const ReviewApp: React.FC = () => {
           subtitle={
             submitted === 'approved'
               ? `${origin === 'claude-code' ? 'Claude Code' : origin === 'pi' ? 'Pi' : 'OpenCode'} will proceed with the changes.`
-              : `${origin === 'claude-code' ? 'Claude Code' : origin === 'pi' ? 'Pi' : 'OpenCode'} will address your review feedback.`
+              : `${origin === 'claude-code' ? 'Claude Code' : origin === 'pi' ? 'Pi' : 'OpenCode'} will address your code feedback.`
           }
           agentLabel={origin === 'claude-code' ? 'Claude Code' : origin === 'pi' ? 'Pi' : 'OpenCode'}
         />
@@ -1078,4 +1078,4 @@ const ReviewApp: React.FC = () => {
   );
 };
 
-export default ReviewApp;
+export default CodeFeedbackApp;

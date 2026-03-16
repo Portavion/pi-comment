@@ -1,5 +1,5 @@
 {
-  "name": "@pi-comment/editor",
+  "name": "@pi-feedback/editor",
   "version": "0.1.0",
   "type": "module",
   "exports": {
@@ -7,7 +7,7 @@
     "./styles": "./index.css"
   },
   "dependencies": {
-    "@pi-comment/ui": "workspace:*",
+    "@pi-feedback/ui": "workspace:*",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwindcss": "^4.1.18"

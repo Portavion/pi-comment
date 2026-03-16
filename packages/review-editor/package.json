@@ -1,5 +1,5 @@
 {
-  "name": "@pi-comment/review-editor",
+  "name": "@pi-feedback/review-editor",
   "version": "0.1.0",
   "type": "module",
   "exports": {
@@ -7,8 +7,8 @@
     "./styles": "./index.css"
   },
   "dependencies": {
-    "@pi-comment/shared": "workspace:*",
-    "@pi-comment/ui": "workspace:*",
+    "@pi-feedback/shared": "workspace:*",
+    "@pi-feedback/ui": "workspace:*",
     "@pierre/diffs": "^1.1.0-beta.19",
     "highlight.js": "^11.11.1",
     "react": "^19.2.3",
