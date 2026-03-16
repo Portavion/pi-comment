@@ -97,6 +97,7 @@ const App: React.FC = () => {
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [initialExportTab, setInitialExportTab] = useState<'share' | 'annotations' | 'notes'>();
   const [noteSaveToast, setNoteSaveToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const hasSubmittedRef = useRef(false);
   // Plan diff state — memoize filtered annotation lists to avoid new references per render
   const diffAnnotations = useMemo(() => annotations.filter(a => !!a.diffContext), [annotations]);
   const viewerAnnotations = useMemo(() => annotations.filter(a => !a.diffContext), [annotations]);
@@ -518,6 +519,30 @@ const App: React.FC = () => {
       setPendingPasteImage(null);
     }
   };
+
+  useEffect(() => {
+    hasSubmittedRef.current = !!submitted;
+  }, [submitted]);
+
+  useEffect(() => {
+    if (!isApiMode) return;
+
+    const notifyClosed = () => {
+      if (hasSubmittedRef.current) return;
+      navigator.sendBeacon('/api/close');
+    };
+
+    const ping = window.setInterval(() => {
+      if (hasSubmittedRef.current) return;
+      fetch('/api/ping', { method: 'POST', keepalive: true }).catch(() => {});
+    }, 1000);
+
+    window.addEventListener('pagehide', notifyClosed);
+    return () => {
+      window.clearInterval(ping);
+      window.removeEventListener('pagehide', notifyClosed);
+    };
+  }, [isApiMode]);
 
   // API mode handlers
   const handleApprove = async () => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ThemeProvider, useTheme } from '@plannotator/ui/components/ThemeProvider';
 import { ModeToggle } from '@plannotator/ui/components/ModeToggle';
 import { ConfirmDialog } from '@plannotator/ui/components/ConfirmDialog';
@@ -174,6 +174,7 @@ const ReviewApp: React.FC = () => {
   const [showApproveWarning, setShowApproveWarning] = useState(false);
   const [sharingEnabled, setSharingEnabled] = useState(true);
   const [repoInfo, setRepoInfo] = useState<{ display: string; branch?: string } | null>(null);
+  const hasSubmittedRef = useRef(false);
 
   const identity = useMemo(() => getIdentity(), []);
 
@@ -534,6 +535,30 @@ const ReviewApp: React.FC = () => {
   }, [annotations, files, editorAnnotations]);
 
   const totalAnnotationCount = annotations.length + editorAnnotations.length;
+
+  useEffect(() => {
+    hasSubmittedRef.current = !!submitted;
+  }, [submitted]);
+
+  useEffect(() => {
+    if (!origin) return;
+
+    const notifyClosed = () => {
+      if (hasSubmittedRef.current) return;
+      navigator.sendBeacon('/api/close');
+    };
+
+    const ping = window.setInterval(() => {
+      if (hasSubmittedRef.current) return;
+      fetch('/api/ping', { method: 'POST', keepalive: true }).catch(() => {});
+    }, 1000);
+
+    window.addEventListener('pagehide', notifyClosed);
+    return () => {
+      window.clearInterval(ping);
+      window.removeEventListener('pagehide', notifyClosed);
+    };
+  }, [origin]);
 
   // Send feedback to OpenCode via API
   const handleSendFeedback = useCallback(async () => {

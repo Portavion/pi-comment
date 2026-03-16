@@ -37,14 +37,16 @@ try {
   // HTML not built yet.
 }
 
-async function runBrowserReview<T>(server: DecisionServer<T>, ctx: ExtensionContext): Promise<T> {
+async function runBrowserReview<T extends { type: "submitted" | "closed" }>(server: DecisionServer<T>, ctx: ExtensionContext): Promise<T> {
   const browserResult = openBrowser(server.url);
   if (browserResult.isRemote) {
     ctx.ui.notify(`Remote session. Open manually: ${browserResult.url}`, "info");
   }
 
   const result = await server.waitForDecision();
-  await new Promise((r) => setTimeout(r, 1500));
+  if (result.type === "submitted") {
+    await new Promise((r) => setTimeout(r, 1500));
+  }
   server.stop();
   return result;
 }
@@ -87,6 +89,11 @@ export default function piComment(pi: ExtensionAPI): void {
       }
 
       const result = await runBrowserReview(server, ctx);
+
+      if (result.type === "closed") {
+        ctx.ui.notify("Code review UI closed without feedback.", "info");
+        return;
+      }
 
       if (result.feedback) {
         if (result.approved) {
@@ -140,6 +147,11 @@ export default function piComment(pi: ExtensionAPI): void {
       }
 
       const result = await runBrowserReview(server, ctx);
+
+      if (result.type === "closed") {
+        ctx.ui.notify("Annotation UI closed without feedback.", "info");
+        return;
+      }
 
       if (result.feedback) {
         pi.sendUserMessage(
