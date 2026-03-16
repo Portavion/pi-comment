@@ -1,5 +1,5 @@
 /**
- * Auto-save code review annotation drafts to the server.
+ * Auto-save code feedback annotation drafts to the server.
  *
  * Similar to useAnnotationDraft but stores CodeAnnotation[] directly
  * (they're already compact — no tuple conversion needed).

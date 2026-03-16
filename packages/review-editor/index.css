@@ -9,7 +9,7 @@
 @import "../ui/theme.css";
 
 /* =====================================================
-   Code Review Specific Styles
+   Code Feedback Specific Styles
    ===================================================== */
 
 /* @pierre/diffs theme integration — pass plannotator theme colors into shadow DOM */
@@ -119,7 +119,7 @@ diffs-container {
   line-height: 1.5;
 }
 
-/* Inline markdown in review comments */
+/* Inline markdown in feedback comments */
 .review-comment-body .inline-code,
 .review-comment-markdown .inline-code {
   font-family: var(--font-mono);
@@ -240,7 +240,7 @@ diffs-container {
   background: var(--primary);
 }
 
-/* Annotation toolbar for code review */
+/* Annotation toolbar for code feedback */
 .review-toolbar {
   position: absolute;
   z-index: 100;
