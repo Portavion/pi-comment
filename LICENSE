@@ -1,0 +1,14 @@
+This project contains code derived from Plannotator:
+https://github.com/backnotprop/plannotator
+
+Copyright (c) 2025 backnotprop
+
+Additional modifications for the standalone pi-comment extraction may be
+copyright their respective contributors.
+
+Unless otherwise noted, this repository is made available under either of:
+
+- the MIT License (see LICENSE-MIT)
+- the Apache License, Version 2.0 (see LICENSE-APACHE)
+
+You may choose either license.

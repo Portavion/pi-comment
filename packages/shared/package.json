@@ -1,0 +1,11 @@
+{
+  "name": "@plannotator/shared",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./compress": "./compress.ts",
+    "./crypto": "./crypto.ts",
+    "./feedback-templates": "./feedback-templates.ts",
+    "./types": "./types.ts"
+  }
+}

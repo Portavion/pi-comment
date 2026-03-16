@@ -1,0 +1,25 @@
+{
+  "name": "@pi-comment/annotator-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@plannotator/editor": "workspace:*",
+    "@plannotator/ui": "workspace:*",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.18",
+    "@tailwindcss/vite": "^4.1.18"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0",
+    "vite-plugin-singlefile": "^2.0.3",
+    "@types/node": "^22.14.0"
+  }
+}

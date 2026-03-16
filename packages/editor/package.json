@@ -1,0 +1,15 @@
+{
+  "name": "@pi-comment/editor",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./App.tsx",
+    "./styles": "./index.css"
+  },
+  "dependencies": {
+    "@plannotator/ui": "workspace:*",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.18"
+  }
+}

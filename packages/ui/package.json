@@ -1,0 +1,24 @@
+{
+  "name": "@pi-comment/ui",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    "./components/*": "./components/*.tsx",
+    "./utils/*": "./utils/*.ts",
+    "./hooks/*": "./hooks/*.ts",
+    "./types": "./types.ts",
+    "./theme": "./theme.css"
+  },
+  "dependencies": {
+    "@plannotator/shared": "workspace:*",
+    "@plannotator/web-highlighter": "^0.8.1",
+    "@viz-js/viz": "^3.25.0",
+    "diff": "^8.0.3",
+    "highlight.js": "^11.11.1",
+    "mermaid": "^11.12.2",
+    "perfect-freehand": "^1.2.2",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "unique-username-generator": "^1.5.1"
+  }
+}

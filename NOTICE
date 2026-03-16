@@ -1,0 +1,13 @@
+pi-comment contains code derived from Plannotator:
+https://github.com/backnotprop/plannotator
+
+Original copyright:
+Copyright (c) 2025 backnotprop
+
+This repository is a reduced standalone extraction focused on:
+- browser-based code review for Pi
+- browser-based markdown annotation for Pi
+
+Files and source structure have been modified from the original project.
+The original project is licensed under MIT OR Apache-2.0.
+See LICENSE, LICENSE-MIT, and LICENSE-APACHE.

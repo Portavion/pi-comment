@@ -1,0 +1,30 @@
+{
+  "name": "pi-comment",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Standalone Pi extension for browser-based code review and markdown annotation",
+  "license": "MIT OR Apache-2.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "keywords": ["pi-package", "pi", "code-review", "markdown", "annotation"],
+  "pi": {
+    "extensions": ["./"]
+  },
+  "files": [
+    "index.ts",
+    "server.ts",
+    "README.md",
+    "annotator.html",
+    "review-editor.html"
+  ],
+  "scripts": {
+    "dev:annotator": "bun run --cwd apps/annotator dev",
+    "dev:review": "bun run --cwd apps/review dev",
+    "build:annotator": "bun run --cwd apps/annotator build",
+    "build:review": "bun run --cwd apps/review build",
+    "build": "bun run build:review && bun run build:annotator && cp apps/annotator/dist/index.html annotator.html && cp apps/review/dist/index.html review-editor.html"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": ">=0.53.0"
+  }
+}
