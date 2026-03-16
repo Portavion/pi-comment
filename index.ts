@@ -59,6 +59,24 @@ function isMarkdownFile(filePath: string): boolean {
   return /\.mdx?$/i.test(filePath);
 }
 
+function resolveMarkdownPath(cwd: string, rawFilePath: string): { displayPath: string; absolutePath: string } {
+  const filePath = rawFilePath.trim();
+  const absolutePath = resolve(cwd, filePath);
+  if (existsSync(absolutePath)) {
+    return { displayPath: filePath, absolutePath };
+  }
+
+  if (filePath.startsWith("@")) {
+    const normalizedPath = filePath.slice(1);
+    const normalizedAbsolutePath = resolve(cwd, normalizedPath);
+    if (existsSync(normalizedAbsolutePath)) {
+      return { displayPath: normalizedPath, absolutePath: normalizedAbsolutePath };
+    }
+  }
+
+  return { displayPath: filePath, absolutePath };
+}
+
 export default function piComment(pi: ExtensionAPI): void {
   pi.registerCommand("codereview", {
     description: "Open interactive code review for current git changes",
@@ -124,13 +142,13 @@ export default function piComment(pi: ExtensionAPI): void {
         return;
       }
 
-      const absolutePath = resolve(ctx.cwd, filePath);
+      const { displayPath, absolutePath } = resolveMarkdownPath(ctx.cwd, filePath);
       if (!existsSync(absolutePath)) {
         ctx.ui.notify(`File not found: ${absolutePath}`, "error");
         return;
       }
 
-      ctx.ui.notify(`Opening annotation UI for ${filePath}...`, "info");
+      ctx.ui.notify(`Opening annotation UI for ${displayPath}...`, "info");
 
       const markdown = readFileSync(absolutePath, "utf-8");
       let server: AnnotateServerResult;
