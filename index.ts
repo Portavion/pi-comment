@@ -100,16 +100,16 @@ export default function piComment(pi: ExtensionAPI): void {
     },
   });
 
-  pi.registerCommand("annotate", {
+  pi.registerCommand("md-review", {
     description: "Open a markdown file in the browser annotation UI",
     handler: async (args, ctx) => {
       const filePath = args?.trim();
       if (!filePath) {
-        ctx.ui.notify("Usage: /annotate <file.md>", "error");
+        ctx.ui.notify("Usage: /md-review <file.md>", "error");
         return;
       }
       if (!isMarkdownFile(filePath)) {
-        ctx.ui.notify("/annotate only supports .md and .mdx files.", "error");
+        ctx.ui.notify("/md-review only supports .md and .mdx files.", "error");
         return;
       }
       if (!annotatorHtmlContent) {
