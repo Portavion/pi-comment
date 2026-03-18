@@ -117,7 +117,7 @@ export default function piFeedback(pi: ExtensionAPI): void {
         if (result.approved) {
           pi.sendUserMessage("# Code Feedback\n\nCode feedback completed — no changes requested.");
         } else {
-          pi.sendUserMessage(`# Code Feedback\n\n${result.feedback}\n\nPlease address this code feedback.`);
+          pi.sendUserMessage(`${result.feedback}\n\nPlease address this code feedback.`);
         }
       } else {
         ctx.ui.notify("Code feedback closed (no feedback).", "info");
