@@ -4,7 +4,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
+import { BorderedLoader, type ExtensionAPI, type ExtensionContext } from "@mariozechner/pi-coding-agent";
 import {
   type AnnotateServerResult,
   type ReviewServerResult,
@@ -17,6 +17,7 @@ import {
 
 interface DecisionServer<T> {
   url: string;
+  close: () => void;
   stop: () => void;
   waitForDecision: () => Promise<T>;
 }
@@ -43,7 +44,43 @@ async function runBrowserDecisionFlow<T extends { type: "submitted" | "closed" }
     ctx.ui.notify(`Remote session. Open manually: ${browserResult.url}`, "info");
   }
 
-  const result = await server.waitForDecision();
+  let finishWaitOverlay: ((result: "cancel" | "done") => void) | undefined;
+  const closeWaitOverlay = (result: "cancel" | "done"): void => {
+    if (!finishWaitOverlay) return;
+    const done = finishWaitOverlay;
+    finishWaitOverlay = undefined;
+    done(result);
+  };
+
+  const waitOverlayPromise = ctx.hasUI
+    ? ctx.ui.custom<"cancel" | "done">((tui, theme, _kb, done) => {
+        finishWaitOverlay = done;
+        const loader = new BorderedLoader(tui, theme, "Waiting for browser feedback...");
+        loader.onAbort = () => closeWaitOverlay("cancel");
+        return loader;
+      }, {
+        overlay: true,
+        overlayOptions: {
+          anchor: "center",
+          width: 44,
+        },
+      })
+    : null;
+
+  const outcome = waitOverlayPromise
+    ? await Promise.race([
+        server.waitForDecision().then((result) => ({ type: "decision" as const, result })),
+        waitOverlayPromise.then((result) => ({ type: "overlay" as const, result })),
+      ])
+    : { type: "decision" as const, result: await server.waitForDecision() };
+
+  if (outcome.type === "overlay") {
+    server.close();
+  }
+
+  const result = outcome.type === "decision" ? outcome.result : await server.waitForDecision();
+  closeWaitOverlay("done");
+
   if (result.type === "submitted") {
     await new Promise((r) => setTimeout(r, 1500));
   }
@@ -86,7 +123,7 @@ export default function piFeedback(pi: ExtensionAPI): void {
         return;
       }
 
-      ctx.ui.notify("Opening code feedback UI...", "info");
+      ctx.ui.notify("Opening code feedback UI... Press Esc in pi to stop waiting.", "info");
 
       const gitCtx = getGitContext();
       const { patch: rawPatch, label: gitRef } = runGitDiff("uncommitted", gitCtx.defaultBranch);
@@ -148,7 +185,7 @@ export default function piFeedback(pi: ExtensionAPI): void {
         return;
       }
 
-      ctx.ui.notify(`Opening annotation UI for ${displayPath}...`, "info");
+      ctx.ui.notify(`Opening annotation UI for ${displayPath}... Press Esc in pi to stop waiting.`, "info");
 
       const markdown = readFileSync(absolutePath, "utf-8");
       let server: AnnotateServerResult;

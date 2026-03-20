@@ -44,11 +44,6 @@ function injectLifecycleScript(content: string): string {
     return originalFetch(input, init);
   };
 
-  const ping = window.setInterval(() => {
-    if (submitted) return;
-    originalFetch('/api/ping', { method: 'POST', keepalive: true }).catch(() => {});
-  }, 1000);
-
   window.addEventListener('pagehide', () => {
     if (submitted) return;
     navigator.sendBeacon('/api/close');
@@ -57,10 +52,6 @@ function injectLifecycleScript(content: string): string {
   window.addEventListener('beforeunload', () => {
     if (submitted) return;
     navigator.sendBeacon('/api/close');
-  });
-
-  window.addEventListener('unload', () => {
-    window.clearInterval(ping);
   });
 })();
 </script>`;
@@ -76,8 +67,6 @@ function injectLifecycleScript(content: string): string {
 const DEFAULT_REMOTE_PORT = 19432;
 const MAX_RETRIES = 5;
 const RETRY_DELAY_MS = 500;
-const CLIENT_HEARTBEAT_TIMEOUT_MS = 4000;
-const CLIENT_HEARTBEAT_CHECK_MS = 1000;
 
 function isRemoteSession(): boolean {
   const remote = process.env.PLANNOTATOR_REMOTE;
@@ -197,6 +186,7 @@ export interface ReviewServerResult {
   port: number;
   portSource: "env" | "remote-default" | "random";
   url: string;
+  close: () => void;
   waitForDecision: () => Promise<ReviewDecision>;
   stop: () => void;
 }
@@ -205,6 +195,7 @@ export interface AnnotateServerResult {
   port: number;
   portSource: "env" | "remote-default" | "random";
   url: string;
+  close: () => void;
   waitForDecision: () => Promise<AnnotateDecision>;
   stop: () => void;
 }
@@ -295,8 +286,6 @@ export function runGitDiff(diffType: DiffType, defaultBranch = "main"): { patch:
 
 function createDecisionResolver<T extends { type: "submitted" | "closed" }>() {
   let decisionResolved = false;
-  let clientConnected = false;
-  let lastClientSeenAt = 0;
   let resolveDecision!: (result: T) => void;
 
   const decisionPromise = new Promise<T>((r) => {
@@ -307,25 +296,9 @@ function createDecisionResolver<T extends { type: "submitted" | "closed" }>() {
     };
   });
 
-  const markClientSeen = (): void => {
-    clientConnected = true;
-    lastClientSeenAt = Date.now();
-  };
-
-  const heartbeatInterval = setInterval(() => {
-    if (decisionResolved || !clientConnected) return;
-    if (Date.now() - lastClientSeenAt > CLIENT_HEARTBEAT_TIMEOUT_MS) {
-      resolveDecision({ type: "closed" } as T);
-    }
-  }, CLIENT_HEARTBEAT_CHECK_MS);
-
-  const cleanup = (): void => clearInterval(heartbeatInterval);
-
   return {
     decisionPromise,
     resolveDecision,
-    markClientSeen,
-    cleanup,
   };
 }
 
@@ -341,13 +314,12 @@ export async function startReviewServer(options: {
   let currentGitRef = options.gitRef;
   let currentDiffType: DiffType = options.diffType || "uncommitted";
 
-  const { decisionPromise, resolveDecision, markClientSeen, cleanup } = createDecisionResolver<ReviewDecision>();
+  const { decisionPromise, resolveDecision } = createDecisionResolver<ReviewDecision>();
 
   const server = createServer(async (req, res) => {
     const url = new URL(req.url!, "http://localhost");
 
     if (url.pathname === "/api/diff" && req.method === "GET") {
-      markClientSeen();
       json(res, {
         rawPatch: currentPatch,
         gitRef: currentGitRef,
@@ -356,7 +328,6 @@ export async function startReviewServer(options: {
         gitContext: options.gitContext,
       });
     } else if (url.pathname === "/api/diff/switch" && req.method === "POST") {
-      markClientSeen();
       const body = await parseBody(req);
       const newType = body.diffType as DiffType;
       if (!newType) return json(res, { error: "Missing diffType" }, 400);
@@ -367,7 +338,6 @@ export async function startReviewServer(options: {
       currentDiffType = newType;
       json(res, { rawPatch: currentPatch, gitRef: currentGitRef, diffType: currentDiffType });
     } else if (url.pathname === "/api/feedback" && req.method === "POST") {
-      markClientSeen();
       const body = await parseBody(req);
       resolveDecision({
         type: "submitted",
@@ -378,11 +348,7 @@ export async function startReviewServer(options: {
     } else if (url.pathname === "/api/close" && req.method === "POST") {
       resolveDecision({ type: "closed" });
       json(res, { ok: true });
-    } else if (url.pathname === "/api/ping" && req.method === "POST") {
-      markClientSeen();
-      json(res, { ok: true });
     } else {
-      markClientSeen();
       html(res, injectLifecycleScript(options.htmlContent));
     }
   });
@@ -392,9 +358,9 @@ export async function startReviewServer(options: {
     port,
     portSource,
     url: `http://localhost:${port}`,
+    close: () => resolveDecision({ type: "closed" }),
     waitForDecision: () => decisionPromise,
     stop: () => {
-      cleanup();
       server.close();
     },
   };
@@ -406,13 +372,12 @@ export async function startAnnotateServer(options: {
   htmlContent: string;
   origin?: string;
 }): Promise<AnnotateServerResult> {
-  const { decisionPromise, resolveDecision, markClientSeen, cleanup } = createDecisionResolver<AnnotateDecision>();
+  const { decisionPromise, resolveDecision } = createDecisionResolver<AnnotateDecision>();
 
   const server = createServer(async (req, res) => {
     const url = new URL(req.url!, "http://localhost");
 
     if (url.pathname === "/api/plan" && req.method === "GET") {
-      markClientSeen();
       json(res, {
         plan: options.markdown,
         origin: options.origin ?? "pi-feedback",
@@ -420,18 +385,13 @@ export async function startAnnotateServer(options: {
         filePath: options.filePath,
       });
     } else if (url.pathname === "/api/feedback" && req.method === "POST") {
-      markClientSeen();
       const body = await parseBody(req);
       resolveDecision({ type: "submitted", feedback: (body.feedback as string) || "" });
       json(res, { ok: true });
     } else if (url.pathname === "/api/close" && req.method === "POST") {
       resolveDecision({ type: "closed" });
       json(res, { ok: true });
-    } else if (url.pathname === "/api/ping" && req.method === "POST") {
-      markClientSeen();
-      json(res, { ok: true });
     } else {
-      markClientSeen();
       html(res, injectLifecycleScript(options.htmlContent));
     }
   });
@@ -441,9 +401,9 @@ export async function startAnnotateServer(options: {
     port,
     portSource,
     url: `http://localhost:${port}`,
+    close: () => resolveDecision({ type: "closed" }),
     waitForDecision: () => decisionPromise,
     stop: () => {
-      cleanup();
       server.close();
     },
   };
