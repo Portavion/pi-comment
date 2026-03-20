@@ -217,6 +217,40 @@ function git(cmd: string): string {
   }
 }
 
+function getUntrackedFiles(): string[] {
+  const output = git("ls-files --others --exclude-standard");
+  if (!output) return [];
+  return output
+    .split("\n")
+    .map((file) => file.trim())
+    .filter(Boolean);
+}
+
+function getUntrackedFilePatch(filePath: string): string {
+  try {
+    return execSync(`git diff --no-index --src-prefix=a/ --dst-prefix=b/ -- /dev/null ${JSON.stringify(filePath)}`, {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim();
+  } catch (err) {
+    if (err && typeof err === "object" && "stdout" in err) {
+      const stdout = err.stdout;
+      return typeof stdout === "string" ? stdout.trim() : String(stdout || "").trim();
+    }
+    return "";
+  }
+}
+
+function appendUntrackedPatches(basePatch: string): string {
+  const untrackedPatches = getUntrackedFiles()
+    .map(getUntrackedFilePatch)
+    .filter(Boolean);
+
+  if (untrackedPatches.length === 0) return basePatch;
+  if (!basePatch) return untrackedPatches.join("\n");
+  return `${basePatch}\n${untrackedPatches.join("\n")}`;
+}
+
 export function getGitContext(): GitContext {
   const currentBranch = git("rev-parse --abbrev-ref HEAD") || "HEAD";
 
@@ -242,7 +276,10 @@ export function getGitContext(): GitContext {
 export function runGitDiff(diffType: DiffType, defaultBranch = "main"): { patch: string; label: string } {
   switch (diffType) {
     case "uncommitted":
-      return { patch: git("diff HEAD --src-prefix=a/ --dst-prefix=b/"), label: "Uncommitted changes" };
+      return {
+        patch: appendUntrackedPatches(git("diff HEAD --src-prefix=a/ --dst-prefix=b/")),
+        label: "Uncommitted changes",
+      };
     case "staged":
       return { patch: git("diff --staged --src-prefix=a/ --dst-prefix=b/"), label: "Staged changes" };
     case "unstaged":
